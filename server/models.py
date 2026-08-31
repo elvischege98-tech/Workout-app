@@ -19,3 +19,13 @@ class Workout(db.Model):
     date = db.Column(db.Date, nullable=False)
     duration_minutes = db.Column(db.Integer, nullable=False)
     notes = db.Column(db.Text)
+
+class WorkoutExercise(db.Model):
+    __tablename__ = 'workout_exercises'
+
+    id = db.Column(db.Integer, primary_key=True)
+    workout_id = db.Column(db.Integer, db.ForeignKey('workouts.id'), nullable=False)
+    reps= db.Column(db.Integer)
+    exercise_id = db.Column(db.Integer, db.ForeignKey('exercises.id'), nullable=False)
+    sets = db.Column(db.Integer)
+    duration_seconds = db.Column(db.Integer)

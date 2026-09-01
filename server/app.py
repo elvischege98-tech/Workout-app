@@ -99,5 +99,59 @@ def create_exercise():
         "equipment_needed": exercise.equipment_needed
     }), 201
 
+#Patching
+@app.route("/exercises/<int:id>", methods=["PATCH"])
+def update_exercise(id):
+    exercise = db.session.get(Exercise, id)
+
+    if not exercise:
+        return jsonify({"error": "Exercise not found"}), 404
+
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"error": "Invalid input"}), 400
+
+    try:
+        if "name" in data:
+            exercise.name = data["name"]
+
+        if "category" in data:
+            exercise.category = data["category"]
+
+        if "equipment_needed" in data:
+            exercise.equipment_needed = data["equipment_needed"]
+
+        db.session.commit()
+
+        return jsonify({
+            "id": exercise.id,
+            "name": exercise.name,
+            "category": exercise.category,
+            "equipment_needed": exercise.equipment_needed
+        }), 200
+
+    except ValueError as error:
+        db.session.rollback()
+        return jsonify({"error": str(error)}), 400
+
+    
+# DELETE a workout exercise
+@app.route("/workout-exercises/<int:id>", methods=["DELETE"])
+def delete_workout_exercise(id):
+    item = db.session.get(WorkoutExercise, id)
+
+    if not item:
+        return jsonify({"error": "Workout exercise not found"}), 404
+
+    db.session.delete(item)
+    db.session.commit()
+
+    return jsonify({
+        "message": "Workout exercise deleted successfully"
+    }), 200
+
+
+
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

@@ -17,6 +17,12 @@ class Exercise(db.Model):
     cascade="all, delete-orphan"
 )    
 
+@validates('name')
+def validate_name(self, key, name):
+    if not name:
+        raise ValueError("Exercise name cannot be empty.")
+    return name    
+
 class Workout(db.Model):
     __tablename__ = "workouts"
 
@@ -34,6 +40,12 @@ class Workout(db.Model):
         back_populates="workout",
         cascade="all, delete-orphan"
     )
+
+@validates('duration_minutes')
+def validate_duration_minutes(self, key, duration_minutes):
+    if duration_minutes <= 0:
+        raise ValueError("Workout duration must be a positive integer.")
+    return duration_minutes    
 
 class WorkoutExercise(db.Model):
     __tablename__ = 'workout_exercises'
@@ -60,3 +72,9 @@ class WorkoutExercise(db.Model):
     "Exercise",
     back_populates="workout_exercises"
     )
+
+@validates('reps', 'sets', 'duration_seconds')
+def validate_non_negative(self, key, value):
+    if value is not None and value < 0:
+        raise ValueError(f"{key} must be a non-negative integer.")
+    return value    

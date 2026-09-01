@@ -41,5 +41,19 @@ def get_exercise(id):
         "equipment_needed": exercise.equipment_needed
     })
 
+@app.route("/workouts", methods=["GET"])
+def get_workouts():
+    workouts = Workout.query.all()
+
+    return jsonify([
+        {
+            "id": workout.id,
+            "date": workout.date.isoformat(),
+            "duration_minutes": workout.duration_minutes,
+            "notes": workout.notes
+        }
+        for workout in workouts
+    ])
+
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

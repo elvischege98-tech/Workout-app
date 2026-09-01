@@ -12,16 +12,34 @@ migrate = Migrate(app, db)
 db.init_app(app)
 
 # Define Routes here
-@app.route('/exercises', methods=['GET'])
+@app.route("/exercises", methods=["GET"])
 def get_exercises():
     exercises = Exercise.query.all()
 
-    return jsonify([{
-        'id': exercise.id,
-        'name': exercise.name,
-        'category': exercise.category,
-        'equipment_needed': exercise.equipment_needed
-    } for exercise in exercises])
+    return jsonify([
+        {
+            "id": exercise.id,
+            "name": exercise.name,
+            "category": exercise.category,
+            "equipment_needed": exercise.equipment_needed
+        }
+        for exercise in exercises
+    ])
+
+
+@app.route("/exercises/<int:id>", methods=["GET"])
+def get_exercise(id):
+    exercise = db.session.get(Exercise, id)
+
+    if not exercise:
+        return jsonify({"error": "Exercise not found"}), 404
+
+    return jsonify({
+        "id": exercise.id,
+        "name": exercise.name,
+        "category": exercise.category,
+        "equipment_needed": exercise.equipment_needed
+    })
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

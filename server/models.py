@@ -25,6 +25,10 @@ class Workout(db.Model):
     duration_minutes = db.Column(db.Integer, nullable=False)
     notes = db.Column(db.Text)
 
+    ___table_args__ = (
+        db.CheckConstraint(duration_minutes > 0, name='check_duration_positive'),
+    )
+
     workout_exercises = db.relationship(
         "WorkoutExercise",
         back_populates="workout",
@@ -40,6 +44,12 @@ class WorkoutExercise(db.Model):
     exercise_id = db.Column(db.Integer, db.ForeignKey('exercises.id'), nullable=False)
     sets = db.Column(db.Integer)
     duration_seconds = db.Column(db.Integer)
+
+    __table_args__ = (
+        db.CheckConstraint(reps >= 0, name='check_reps_non_negative'),
+        db.CheckConstraint(sets >= 0, name='check_sets_non_negative'),
+        db.CheckConstraint(duration_seconds >= 0, name='check_duration_non_negative'),
+    ) 
 
     workout=db.relationship(
     "Workout",

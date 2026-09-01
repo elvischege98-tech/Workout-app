@@ -1,5 +1,5 @@
 from flask import Flask, make_response,jsonify,request
-from flask_migrate import Migrate
+from flask_migrate import Migrate  # type: ignore
 
 from models import db, Exercise, Workout, WorkoutExercise
 from schemas import ExerciseSchema, WorkoutSchema, WorkoutExerciseSchema
